@@ -3,9 +3,5 @@ import { Link } from "expo-router";
 import Planner from "./login";
 
 export default function Page() {
-  return (
-    <View>
-      <Planner />
-    </View>
-  );
+  return <Planner />;
 }
