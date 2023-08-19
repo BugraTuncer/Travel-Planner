@@ -10,25 +10,24 @@ import {
 } from "react-native";
 import { Formik } from "formik";
 import * as Yup from "yup";
-import Break from "./components/Break";
-import { auth } from "../firebaseConfig";
 import { router, Stack } from "expo-router";
-import TravelLogo from "../assets/destination.png";
+import { auth } from "../../firebaseConfig";
+import Break from "../components/Break";
+import LoginLogo from "../../assets/login.png";
 
-export default function Login() {
+const Register = () => {
   return (
     <>
       <View style={styles.container}>
         <Image
-          source={TravelLogo}
+          source={LoginLogo}
           contentFit="cover"
           style={{ width: 125, height: 125 }}
         />
         <Break />
         <Stack.Screen
           options={{
-            title: "",
-            headerShown: false,
+            title: "Register",
             headerStyle: { backgroundColor: "#f4511e" },
             headerTintColor: "#fff",
             headerTitleStyle: {
@@ -37,26 +36,33 @@ export default function Login() {
           }}
         />
         <Formik
-          initialValues={{ password: "", email: "" }}
+          initialValues={{ password: "", confirmPassword: "", email: "" }}
           validationSchema={Yup.object({
             email: Yup.string().email("Invalid Email").required("Required"),
             password: Yup.string().required("Required"),
+            confirmPassword: Yup.string().oneOf(
+              [Yup.ref("password"), null],
+              "Passwords must match"
+            ),
           })}
           onSubmit={(values, formikActions) => {
             setTimeout(() => {
               auth
-                .signInWithEmailAndPassword(values.email, values.password)
+                .createUserWithEmailAndPassword(values.email, values.password)
                 .then((userCredential) => {
                   // Signed in
                   const user = userCredential.user;
                   if (user) {
-                    router.push("/pages/home");
+                    Alert.alert("Success", "Succesfully registered", [
+                      { text: "Ok", onPress: () => router.push("/login") },
+                    ]);
                   }
                   // ...
                 })
                 .catch((error) => {
                   const errorMessage = error.message;
-                  Alert.alert("Error", error.message, [{ text: "Ok" }]);
+                  Alert.alert(errorMessage);
+                  // ..
                 });
               formikActions.setSubmitting(false);
             }, 500);
@@ -88,6 +94,18 @@ export default function Login() {
                 <Text style={styles.error}>{props.errors.password}</Text>
               ) : null}
               <Break />
+              <TextInput
+                onChangeText={props.handleChange("confirmPassword")}
+                onBlur={props.handleBlur("confirmPassword")}
+                value={props.values.confirmPassword}
+                placeholder="Confirm Password"
+                style={styles.input}
+                secureTextEntry
+              />
+              {props.touched.confirmPassword && props.errors.confirmPassword ? (
+                <Text style={styles.error}>{props.errors.confirmPassword}</Text>
+              ) : null}
+              <Break />
               <View
                 style={{
                   display: "flex",
@@ -95,19 +113,11 @@ export default function Login() {
                   alignItems: "center",
                 }}
               >
+                <Break />
                 <Pressable
                   onPress={props.handleSubmit}
                   loading={props.isSubmitting}
-                  style={styles.buttonSignIn}
-                >
-                  <Text style={{ color: "white" }}>Sign In</Text>
-                </Pressable>
-
-                <Break />
-                <Pressable
-                  onPress={() => router.push("/pages/register")}
-                  loading={props.isSubmitting}
-                  style={styles.buttonSignUp}
+                  style={styles.buttonRegister}
                 >
                   <Text style={{ color: "black" }}>Sign Up</Text>
                 </Pressable>
@@ -119,7 +129,7 @@ export default function Login() {
       </View>
     </>
   );
-}
+};
 
 const styles = StyleSheet.create({
   container: {
@@ -127,25 +137,14 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-
   error: {
     margin: 8,
     fontSize: 14,
     color: "red",
     fontWeight: "bold",
   },
-
-  buttonSignIn: {
+  buttonRegister: {
     backgroundColor: "#f4511e",
-    borderRadius: "8",
-    width: 250,
-    alignItems: "center",
-    height: 40,
-    justifyContent: "center",
-  },
-  buttonSignUp: {
-    borderColor: "#f4511e",
-    borderWidth: 1,
     borderRadius: "8",
     width: 250,
     alignItems: "center",
@@ -161,3 +160,5 @@ const styles = StyleSheet.create({
     borderColor: "#f4511e",
   },
 });
+
+export default Register;
