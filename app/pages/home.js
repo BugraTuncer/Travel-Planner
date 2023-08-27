@@ -6,7 +6,7 @@ const Home = () => {
   return (
     <Stack.Screen
       options={{
-        title: "Home",
+        title: "",
         headerStyle: { backgroundColor: "#f4511e" },
         headerTintColor: "#fff",
         headerTitleStyle: {

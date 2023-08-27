@@ -15,7 +15,11 @@
     "assetBundlePatterns": ["**/*"],
     "ios": {
       "supportsTablet": true,
-      "googleServicesFile": "./GoogleService-Info.plist"
+      "googleServicesFile": "./GoogleService-Info.plist",
+      "bundleIdentifier": "travel-planner-ccf18.firebaseapp.com",
+      "config": {
+        "googleMapsApiKey": "AIzaSyBy6c2qPnbpCHWx1d9w-oPdbELuntqqLm8"
+      }
     },
     "android": {
       "adaptiveIcon": {

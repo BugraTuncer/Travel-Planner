@@ -1,7 +1,5 @@
-import { View } from "react-native";
-import { Link } from "expo-router";
-import Planner from "./login";
+import Home from "./pages/Home";
 
 export default function Page() {
-  return <Planner />;
+  return <Home />;
 }
